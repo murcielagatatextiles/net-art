@@ -17,14 +17,19 @@
     cursor: none;
   }
 
-  #scene-video {
+  /* ── Escenas base ── */
+  .scene {
     position: fixed;
     inset: 0;
-    display: flex;
+    background: #000;
+    display: none;
+    z-index: 10;
+  }
+
+  #scene-video {
+    display: flex;               /* visible al inicio */
     align-items: center;
     justify-content: center;
-    background: #000;
-    z-index: 10;
   }
 
   #scene-video video {
@@ -33,20 +38,15 @@
     object-fit: cover;
   }
 
-  #scene-iknow {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    display: none;
-    z-index: 10;
-    overflow: hidden;
-    cursor: none;
-  }
+  #scene-iknow  { overflow: hidden; cursor: none; }
+  #scene-name   { flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem; }
+  #scene-names  { overflow: hidden; }
+  #scene-final  { align-items: center; justify-content: center; flex-direction: column; gap: 1.5rem; }
 
+  /* ── Escena 2 ── */
   #iknow-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     font-size: clamp(3rem, 12vw, 9rem);
     font-weight: 900;
@@ -62,14 +62,18 @@
     position: absolute;
     inset: 0;
     z-index: 15;
+    /* Contenedor de compositing para todas las fotos */
+    contain: layout paint;
   }
 
   .floating-photo {
     position: absolute;
     opacity: 0;
     animation: fadeInPhoto 0.4s forwards;
-    max-width: 350px;
     width: 350px;
+    max-width: 350px;
+    /* Evita reflow al animar */
+    will-change: transform, opacity;
   }
 
   @keyframes fadeInPhoto {
@@ -77,24 +81,12 @@
     to   { opacity: 0.9; transform: scale(1); }
   }
 
-
   @keyframes blink {
     0%, 100% { opacity: 0.4; }
     50%       { opacity: 1; }
   }
 
-  #scene-name {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    display: none;
-    z-index: 10;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.8rem;
-  }
-
+  /* ── Escena 3 ── */
   #verify-status {
     font-size: 0.8rem;
     letter-spacing: 0.3em;
@@ -140,10 +132,7 @@
     transition: border-color 0.2s, color 0.2s;
   }
 
-  #name-submit:hover {
-    border-color: #fff;
-    color: #fff;
-  }
+  #name-submit:hover { border-color: #fff; color: #fff; }
 
   #input-error {
     font-size: 0.65rem;
@@ -153,42 +142,44 @@
     text-align: center;
   }
 
-  #scene-names {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    display: none;
-    z-index: 10;
-    overflow: hidden;
-  }
-
+  /* ── Escena 4 ── */
   .name-token {
     position: absolute;
     font-family: 'Courier New', monospace;
     font-weight: 900;
     color: #fff;
     pointer-events: none;
-    animation: glitchFade 0.3s forwards;
     white-space: nowrap;
+    will-change: opacity;
+    transition: opacity 0.25s ease;
   }
 
-  @keyframes glitchFade {
-    0%   { opacity: 0; transform: skewX(10deg) scale(0.9); }
-    60%  { opacity: 1; transform: skewX(-3deg) scale(1.02); }
-    100% { opacity: 0.85; transform: skewX(0) scale(1); }
-  }
-
-  #scene-final {
-    position: fixed;
+  /* ── Escena 5 ── */
+  #glitch-overlay {
+    position: absolute;
     inset: 0;
-    background: #000;
-    display: none;
-    z-index: 10;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 1.5rem;
+    pointer-events: none;
+    z-index: 5;
   }
+
+  .glitch-bar {
+    position: absolute;
+    left: 0;
+    background: #000;
+    width: 100%;
+    opacity: 0;
+  }
+
+  #error-msg {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.6rem, 1.5vw, 0.85rem);
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.2em;
+    margin-top: 1.5rem;
+    min-height: 1.2em;
+  }
+
+  #cursor-blink { animation: blink 0.7s infinite; }
 
   #scene-final p {
     font-size: clamp(1.2rem, 4vw, 2.5rem);
@@ -220,66 +211,7 @@
     clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
   }
 
-  @keyframes slowAppear {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  @keyframes glitchTop {
-    0%,79%,100% { transform:translate(0);opacity:0; }
-    80% { transform:translate(-12px,-5px) skewX(15deg);opacity:1; }
-    82% { transform:translate(14px,3px) skewX(-12deg) scaleY(1.5);opacity:1; }
-    84% { transform:translate(-8px,6px) skewX(8deg);opacity:1; }
-    86% { transform:translate(16px,-4px) scaleY(0.6) scaleX(1.3);opacity:1; }
-    88% { transform:translate(-14px,2px) skewX(-20deg);opacity:1; }
-    90% { transform:translate(10px,-6px) skewX(10deg);opacity:0.6; }
-    92% { transform:translate(-6px,4px);opacity:1; }
-    94% { transform:translate(12px,-2px) scaleX(1.4);opacity:1; }
-    96% { transform:translate(-4px,3px) skewX(-5deg);opacity:0.4; }
-    98% { transform:translate(0);opacity:0; }
-  }
-
-  @keyframes glitchBot {
-    0%,74%,100% { transform:translate(0);opacity:0; }
-    75% { transform:translate(14px,6px) skewX(-15deg);opacity:1; }
-    77% { transform:translate(-16px,-4px) skewX(12deg) scaleY(1.4);opacity:1; }
-    79% { transform:translate(10px,8px) skewX(-8deg);opacity:1; }
-    81% { transform:translate(-18px,3px) scaleY(0.5) scaleX(1.5);opacity:1; }
-    83% { transform:translate(12px,-6px) skewX(18deg);opacity:1; }
-    85% { transform:translate(-8px,5px) skewX(-10deg);opacity:0.5; }
-    87% { transform:translate(14px,-3px);opacity:1; }
-    89% { transform:translate(-10px,4px) scaleX(1.3);opacity:1; }
-    93% { transform:translate(0);opacity:0; }
-  }
-
-  #glitch-overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  .glitch-bar {
-    position: absolute;
-    left: 0;
-    background: #000;
-    width: 100%;
-    opacity: 0;
-  }
-
-  #error-msg {
-    font-family: 'Courier New', monospace;
-    font-size: clamp(0.6rem, 1.5vw, 0.85rem);
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 0.2em;
-    margin-top: 1.5rem;
-    min-height: 1.2em;
-  }
-
-  #cursor-blink {
-    animation: blink 0.7s infinite;
-  }
-
+  /* ── Entrada ── */
   #scene-enter {
     position: fixed;
     inset: 0;
@@ -298,13 +230,44 @@
     animation: blink 1.5s infinite;
   }
 
-  .fade-out {
-    animation: fadeOutScene 0.8s forwards !important;
-  }
+  /* ── Transiciones ── */
+  .fade-out { animation: fadeOutScene 0.8s forwards !important; }
 
   @keyframes fadeOutScene {
     from { opacity: 1; }
     to   { opacity: 0; pointer-events: none; }
+  }
+
+  @keyframes slowAppear {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes glitchTop {
+    0%,79%,100% { transform:translate(0);opacity:0; }
+    80%  { transform:translate(-12px,-5px) skewX(15deg);opacity:1; }
+    82%  { transform:translate(14px,3px) skewX(-12deg) scaleY(1.5);opacity:1; }
+    84%  { transform:translate(-8px,6px) skewX(8deg);opacity:1; }
+    86%  { transform:translate(16px,-4px) scaleY(0.6) scaleX(1.3);opacity:1; }
+    88%  { transform:translate(-14px,2px) skewX(-20deg);opacity:1; }
+    90%  { transform:translate(10px,-6px) skewX(10deg);opacity:0.6; }
+    92%  { transform:translate(-6px,4px);opacity:1; }
+    94%  { transform:translate(12px,-2px) scaleX(1.4);opacity:1; }
+    96%  { transform:translate(-4px,3px) skewX(-5deg);opacity:0.4; }
+    98%  { transform:translate(0);opacity:0; }
+  }
+
+  @keyframes glitchBot {
+    0%,74%,100% { transform:translate(0);opacity:0; }
+    75%  { transform:translate(14px,6px) skewX(-15deg);opacity:1; }
+    77%  { transform:translate(-16px,-4px) skewX(12deg) scaleY(1.4);opacity:1; }
+    79%  { transform:translate(10px,8px) skewX(-8deg);opacity:1; }
+    81%  { transform:translate(-18px,3px) scaleY(0.5) scaleX(1.5);opacity:1; }
+    83%  { transform:translate(12px,-6px) skewX(18deg);opacity:1; }
+    85%  { transform:translate(-8px,5px) skewX(-10deg);opacity:0.5; }
+    87%  { transform:translate(14px,-3px);opacity:1; }
+    89%  { transform:translate(-10px,4px) scaleX(1.3);opacity:1; }
+    93%  { transform:translate(0);opacity:0; }
   }
 </style>
 </head>
@@ -316,19 +279,18 @@
 </section>
 
 <!-- ESCENA 1: Video -->
-<section id="scene-video">
-  <video id="main-video" playsinline></video>
+<section id="scene-video scene">
+  <video id="main-video" playsinline preload="none"></video>
 </section>
 
 <!-- ESCENA 2: I KNOW YOU + fotos -->
-<section id="scene-iknow">
+<section id="scene-iknow" class="scene">
   <div id="iknow-text">I KNOW YOU</div>
   <div id="photos-container"></div>
-
 </section>
 
 <!-- ESCENA 3: Verificación -->
-<section id="scene-name">
+<section id="scene-name" class="scene">
   <div id="verify-status"></div>
   <div id="verify-question"></div>
   <input id="name-input" type="text" autocomplete="off" spellcheck="false">
@@ -337,215 +299,245 @@
 </section>
 
 <!-- ESCENA 4: Saturación -->
-<section id="scene-names"></section>
+<section id="scene-names" class="scene"></section>
 
 <!-- ESCENA 5: Final -->
-<section id="scene-final">
+<section id="scene-final" class="scene">
   <div id="glitch-overlay"></div>
   <p id="profile-text">Profile saved.</p>
   <div id="error-msg"></div>
 </section>
 
 <script>
-  const TOTAL_IMAGES = 36;
-  const IMG_EXT = 'png';
+  // ─────────────────────────────────────────────
+  // CONFIGURACIÓN
+  // ─────────────────────────────────────────────
+  const TOTAL_IMAGES  = 36;
+  const IMG_EXT       = 'png';
+  const MAX_PHOTOS    = 40;   // límite de fotos en DOM a la vez
+  const PHOTO_INTERVAL_MS = 180;
+  const TOKEN_INTERVAL_MS = 200;
 
-  const video = document.getElementById('main-video');
-  const enterScreen = document.getElementById('scene-enter');
+  // ─────────────────────────────────────────────
+  // HELPERS DE ESCENA
+  // ─────────────────────────────────────────────
 
-  enterScreen.addEventListener('click', () => {
-    enterScreen.classList.add('fade-out');
+  /** Muestra una escena usando flex o block según corresponda */
+  function showScene(el, display = 'block') {
+    el.style.display = display;
+  }
+
+  /** Oculta una escena con fade y ejecuta el callback cuando termina */
+  function hideScene(el, cb) {
+    el.classList.add('fade-out');
     setTimeout(() => {
-      enterScreen.style.display = 'none';
-      video.src = 'video.mp4';
-      video.play();
+      el.style.display = 'none';
+      el.classList.remove('fade-out');
+      cb && cb();
     }, 800);
-  });
+  }
 
-  let scene2Started = false;
+  // ─────────────────────────────────────────────
+  // ESCENA 0 → 1: ENTRADA + VIDEO
+  // ─────────────────────────────────────────────
+  const video       = document.getElementById('main-video');
+  const enterScreen = document.getElementById('scene-enter');
+  const sceneVideo  = document.getElementById('scene-video');
 
-  video.addEventListener('ended', startScene2);
-  setTimeout(startScene2, 31000);
+  let scene2Started   = false;
+  let scene2Fallback  = null;
+
+  // El video solo se carga cuando el usuario hace clic (ahorra ancho de banda)
+  enterScreen.addEventListener('click', () => {
+    video.src = 'video.mp4';
+    video.load();
+
+    hideScene(enterScreen, () => {
+      video.addEventListener('ended', startScene2, { once: true });
+      // Fallback: si el video no termina en 31s, avanzar igual
+      scene2Fallback = setTimeout(startScene2, 31000);
+      video.play().catch(console.warn);
+    });
+  }, { once: true });
+
+  // ─────────────────────────────────────────────
+  // ESCENA 2: I KNOW YOU + FOTOS
+  // ─────────────────────────────────────────────
+  let photoIntervalId = null;
 
   function startScene2() {
     if (scene2Started) return;
     scene2Started = true;
-    const s1 = document.getElementById('scene-video');
-    s1.classList.add('fade-out');
-    setTimeout(() => {
-      s1.style.display = 'none';
-      const s2 = document.getElementById('scene-iknow');
-      s2.style.display = 'block';
-      spawnPhotos();
-    }, 800);
-  }
+    clearTimeout(scene2Fallback);
 
-  let photoInterval;
-  let canClick = false;
+    hideScene(sceneVideo, () => {
+      const s2 = document.getElementById('scene-iknow');
+      showScene(s2, 'block');
+      spawnPhotos();
+      // Avanzar automáticamente a los 25 segundos
+      setTimeout(goToScene3, 25000);
+    });
+  }
 
   function spawnPhotos() {
     const container = document.getElementById('photos-container');
     let count = 0;
-    photoInterval = setInterval(() => {
+
+    photoIntervalId = setInterval(() => {
+      // ── FIX: limitar nodos en el DOM ──
+      if (container.children.length >= MAX_PHOTOS) {
+        container.firstElementChild.remove();
+      }
+
       const img = document.createElement('img');
       const idx = (count % TOTAL_IMAGES) + 1;
-      img.src = `img${idx}.${IMG_EXT}`;
-      img.classList.add('floating-photo');
-      img.style.left   = Math.random() * window.innerWidth + 'px';
-      img.style.top    = Math.random() * window.innerHeight + 'px';
-      img.style.zIndex = Math.floor(Math.random()*10) + 1;
-      img.style.transform = `rotate(${(Math.random()-0.5)*12}deg)`;
+      img.src       = `img${idx}.${IMG_EXT}`;
+      img.className = 'floating-photo';
+      img.style.cssText = `
+        left:${Math.random() * (window.innerWidth  - 350)}px;
+        top :${Math.random() * (window.innerHeight - 200)}px;
+        z-index:${Math.floor(Math.random() * 10) + 1};
+        transform:rotate(${(Math.random() - 0.5) * 12}deg);
+      `;
       container.appendChild(img);
       count++;
-    }, 180);
-
-    // Avanzar automáticamente a los 25 segundos
-    setTimeout(() => {
-      goToScene3();
-    }, 25000);
+    }, PHOTO_INTERVAL_MS);
   }
 
-  function goToScene3() {
-    clearInterval(photoInterval);
-    const s2 = document.getElementById('scene-iknow');
-    s2.classList.add('fade-out');
-    setTimeout(() => {
-      s2.style.display = 'none';
-      const s3 = document.getElementById('scene-name');
-      s3.style.display = 'flex';
-      startVerification();
-    }, 800);
-  }
-
+  // ─────────────────────────────────────────────
+  // ESCENA 3: VERIFICACIÓN
+  // ─────────────────────────────────────────────
   const questions = [
-    { label: 'Ingresa tu nombre completo para continuar', placeholder: 'nombre completo', key: 'nombre' },
-    { label: 'Confirma tu año de nacimiento',             placeholder: 'año',             key: 'año' },
-    { label: 'Ciudad de residencia',                      placeholder: 'ciudad',           key: 'ciudad' },
-    { label: 'Usuario de Instagram',                      placeholder: '@usuario',         key: 'instagram' },
+    { label: 'Ingresa tu nombre completo para continuar', placeholder: 'nombre completo', key: 'nombre'    },
+    { label: 'Confirma tu año de nacimiento',             placeholder: 'año',             key: 'año'       },
+    { label: 'Ciudad de residencia',                      placeholder: 'ciudad',          key: 'ciudad'    },
+    { label: 'Usuario de Instagram',                      placeholder: '@usuario',        key: 'instagram' },
   ];
 
   const userData = {};
-  let currentQ = 0;
+  let currentQ     = 0;
+  let answerLocked = false;
+  let typingIv     = null;   // referencia al interval del typewriter
 
-  function startVerification() {
-    currentQ = 0;
-    const btn = document.getElementById('name-submit');
-    // Clonar el botón para eliminar cualquier listener previo
-    const newBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(newBtn, btn);
-    newBtn.addEventListener('click', handleAnswer);
-    showQuestion(currentQ);
+  // Elementos del formulario (referencias fijas; no se clonan más)
+  const questionEl  = document.getElementById('verify-question');
+  const statusEl    = document.getElementById('verify-status');
+  const errorEl     = document.getElementById('input-error');
+  const nameInput   = document.getElementById('name-input');
+  const submitBtn   = document.getElementById('name-submit');
+
+  submitBtn.addEventListener('click', handleAnswer);
+  nameInput.addEventListener('input', () => { errorEl.textContent = ''; });
+  nameInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleAnswer();
+    if (questions[currentQ]?.key === 'instagram' && e.key === ' ') e.preventDefault();
+  });
+
+  function goToScene3() {
+    clearInterval(photoIntervalId);
+    const s2 = document.getElementById('scene-iknow');
+
+    hideScene(s2, () => {
+      document.getElementById('photos-container').innerHTML = '';
+      const s3 = document.getElementById('scene-name');
+      showScene(s3, 'flex');
+      startVerification();
+    });
   }
 
-  let typingActive = false;
+  function startVerification() {
+    currentQ     = 0;
+    answerLocked = false;
+    showQuestion(0);
+  }
 
   function showQuestion(idx) {
     const q = questions[idx];
-    const questionEl = document.getElementById('verify-question');
-    const errorEl = document.getElementById('input-error');
-    const status = document.getElementById('verify-status');
-
-    status.textContent = '';
+    statusEl.textContent   = '';
+    errorEl.textContent    = '';
     questionEl.textContent = '';
-    errorEl.textContent = '';
+    nameInput.value        = '';
+    nameInput.placeholder  = q.placeholder;
+    nameInput.disabled     = false;
+    submitBtn.disabled     = false;
 
-    // Clonar el input para limpiar listeners
-    const oldInput = document.getElementById('name-input');
-    const newInput = oldInput.cloneNode(false);
-    newInput.id = 'name-input';
-    newInput.value = '';
-    newInput.placeholder = q.placeholder;
-    newInput.disabled = false;
-    oldInput.parentNode.replaceChild(newInput, oldInput);
-    newInput.addEventListener('input', () => { errorEl.textContent = ''; });
-    newInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') handleAnswer();
-      if (questions[currentQ] && questions[currentQ].key === 'instagram' && e.key === ' ') e.preventDefault();
-    });
-
-    typingActive = true;
+    // Typewriter
+    clearInterval(typingIv);
     let i = 0;
-    const iv = setInterval(() => {
-      questionEl.textContent += q.label[i];
-      i++;
+    typingIv = setInterval(() => {
+      questionEl.textContent += q.label[i++];
       if (i >= q.label.length) {
-        clearInterval(iv);
-        typingActive = false;
-        newInput.focus();
+        clearInterval(typingIv);
+        nameInput.focus();
       }
     }, 35);
   }
 
-  let answerLocked = false;
-
   function handleAnswer() {
     if (answerLocked) return;
-    const input = document.getElementById('name-input');
-    const errorEl = document.getElementById('input-error');
-    let val = input.value.trim();
+
+    let val = nameInput.value.trim();
     if (!val) return;
 
+    const key = questions[currentQ].key;
+
     // Validar año
-    if (questions[currentQ].key === 'año') {
+    if (key === 'año') {
       if (!/^\d{4}$/.test(val)) {
         errorEl.textContent = 'ingresa solo números (ej: 1998)';
-        input.value = '';
-        input.focus();
+        nameInput.value = '';
+        nameInput.focus();
         return;
       }
-      const yr = parseInt(val);
+      const yr = parseInt(val, 10);
       if (yr < 1900 || yr > new Date().getFullYear()) {
         errorEl.textContent = 'año no válido';
-        input.value = '';
-        input.focus();
+        nameInput.value = '';
+        nameInput.focus();
         return;
       }
     }
 
-    // Agregar @ en instagram y mostrarlo brevemente
-    if (questions[currentQ].key === 'instagram') {
-      if (!val.startsWith('@')) {
-        val = '@' + val;
-        input.value = val;
-      }
+    // Normalizar Instagram
+    if (key === 'instagram' && !val.startsWith('@')) {
+      val = '@' + val;
+      nameInput.value = val;
     }
 
-    errorEl.textContent = '';
-    userData[questions[currentQ].key] = val;
-    answerLocked = true;
-    input.disabled = true;
-    document.getElementById('name-submit').disabled = true;
-
-    const status = document.getElementById('verify-status');
-    status.textContent = 'verificando...';
+    errorEl.textContent    = '';
+    userData[key]          = val;
+    answerLocked           = true;
+    nameInput.disabled     = true;
+    submitBtn.disabled     = true;
+    statusEl.textContent   = 'verificando...';
 
     setTimeout(() => {
-      status.textContent = 'dato registrado ✓';
+      statusEl.textContent = 'dato registrado ✓';
       setTimeout(() => {
-        input.disabled = false;
-        document.getElementById('name-submit').disabled = false;
         answerLocked = false;
         currentQ++;
         if (currentQ < questions.length) {
           showQuestion(currentQ);
         } else {
-          const s3 = document.getElementById('scene-name');
-          s3.classList.add('fade-out');
-          setTimeout(() => {
-            s3.style.display = 'none';
+          hideScene(document.getElementById('scene-name'), () => {
             startDataSaturation(userData);
-          }, 800);
+          });
         }
       }, 900);
     }, 1200);
   }
 
-  function startDataSaturation(data) {
-    const s4 = document.getElementById('scene-names');
-    s4.style.display = 'block';
+  // ─────────────────────────────────────────────
+  // ESCENA 4: SATURACIÓN DE DATOS
+  // ─────────────────────────────────────────────
+  let satRafId = null;   // ID del rAF para poder cancelarlo
 
-    const year = parseInt(data['año']);
-    const age = isNaN(year) ? '??' : (new Date().getFullYear() - year);
+  function startDataSaturation(data) {
+    const s4   = document.getElementById('scene-names');
+    const year = parseInt(data['año'], 10);
+    const age  = isNaN(year) ? '??' : (new Date().getFullYear() - year);
+
+    showScene(s4, 'block');
 
     const realData = [
       `nombre: ${data.nombre}`,
@@ -584,13 +576,13 @@
       'estado emocional inferido: búsqueda de validación',
       'propensión a deuda: moderada',
       `IP registrada: 190.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
-      `dispositivo: smartphone android`,
-      `sistema operativo: Android 13`,
+      'dispositivo: smartphone android',
+      'sistema operativo: Android 13',
       `batería al momento del registro: ${Math.floor(20+Math.random()*75)}%`,
-      `resolución de pantalla: 1080x2400`,
+      'resolución de pantalla: 1080x2400',
       `tiempo en plataforma hoy: ${Math.floor(1+Math.random()*5)}h ${Math.floor(Math.random()*59)}min`,
-      `búsquedas recientes: trabajo, amor, dinero`,
-      `palabras clave frecuentes: "necesito", "quiero", "no puedo"`,
+      'búsquedas recientes: trabajo, amor, dinero',
+      'palabras clave frecuentes: "necesito", "quiero", "no puedo"',
       `historial de ubicaciones: ${Math.floor(3+Math.random()*8)} lugares distintos esta semana`,
       `contactos sincronizados: ${Math.floor(80+Math.random()*300)}`,
       `fotos en galería: ${Math.floor(500+Math.random()*3000)}`,
@@ -599,104 +591,140 @@
       `frecuencia cardíaca promedio inferida: ${Math.floor(68+Math.random()*20)} bpm`,
       `nivel de estrés estimado: ${Math.floor(55+Math.random()*40)}/100`,
       `probabilidad de insomnio: ${Math.floor(30+Math.random()*50)}%`,
-      `red wifi habitual: registrada`,
-      `tipo de conexión: 4G / WiFi mixto`,
-      `apps más usadas: redes sociales, mensajería, entretenimiento`,
+      'red wifi habitual: registrada',
+      'tipo de conexión: 4G / WiFi mixto',
+      'apps más usadas: redes sociales, mensajería, entretenimiento',
       `compras online último mes: ${Math.floor(1+Math.random()*8)}`,
       `ticket promedio: $${Math.floor(15+Math.random()*80)}`,
-      `categorías de interés: moda, tecnología, salud`,
-      `consumo de noticias: bajo`,
-      `contenido consumido: 94% entretenimiento, 6% información`,
+      'categorías de interés: moda, tecnología, salud',
+      'consumo de noticias: bajo',
+      'contenido consumido: 94% entretenimiento, 6% información',
       `videos vistos hoy: ${Math.floor(20+Math.random()*80)}`,
       `duración promedio por video: ${Math.floor(15+Math.random()*45)} seg`,
       `porcentaje de videos completados: ${Math.floor(20+Math.random()*40)}%`,
       `amigos en común con perfiles de riesgo: ${Math.floor(2+Math.random()*15)}`,
       `probabilidad de depresión leve: ${Math.floor(20+Math.random()*40)}%`,
-      `índice de soledad inferido: moderado-alto`,
+      'índice de soledad inferido: moderado-alto',
       `última hora de actividad: 02:${Math.floor(10+Math.random()*49)}am`,
-      `tipo de relación sentimental: indeterminado`,
-      `búsquedas de salud: 3 en los últimos 7 días`,
-      `interés en préstamos: detectado`,
-      `perfil político: centro / volátil`,
-      `susceptibilidad a fake news: media`,
+      'tipo de relación sentimental: indeterminado',
+      'búsquedas de salud: 3 en los últimos 7 días',
+      'interés en préstamos: detectado',
+      'perfil político: centro / volátil',
+      'susceptibilidad a fake news: media',
       `probabilidad de cambio de marca: ${Math.floor(40+Math.random()*40)}%`,
-      `lealtad a plataforma: baja`,
+      'lealtad a plataforma: baja',
       `score de manipulabilidad: ${Math.floor(55+Math.random()*40)}/100`,
       `valor como usuario para anunciantes: $${(Math.random()*4+0.5).toFixed(2)}/mes`,
-      `datos vendidos a terceros: confirmado`,
+      'datos vendidos a terceros: confirmado',
       `número de empresas con acceso a tu perfil: ${Math.floor(40+Math.random()*200)}+`,
-      `último backup de datos: hoy`,
-      `registro permanente: activo`,
+      'último backup de datos: hoy',
+      'registro permanente: activo',
       `ID de usuario interno: #${Math.floor(1000000+Math.random()*9000000)}`,
       `hash de dispositivo: ${Math.random().toString(36).substring(2,12).toUpperCase()}`,
       `cookies activas: ${Math.floor(80+Math.random()*200)}`,
       `trackers activos en segundo plano: ${Math.floor(10+Math.random()*30)}`,
-      `permisos concedidos: cámara, micrófono, ubicación, contactos`,
-      `micrófono activo en segundo plano: probable`,
-      `rostro indexado: sí`,
-      `voz registrada: sí`,
+      'permisos concedidos: cámara, micrófono, ubicación, contactos',
+      'micrófono activo en segundo plano: probable',
+      'rostro indexado: sí',
+      'voz registrada: sí',
       `frecuencia de uso de emojis: ${Math.floor(10+Math.random()*30)}/día`,
-      `emoji más usado: ❤️`,
-      `sentimiento de mensajes privados: analizado`,
-      `palabras más usadas en chat: "ok", "ya", "jaja"`,
+      'emoji más usado: ❤️',
+      'sentimiento de mensajes privados: analizado',
+      'palabras más usadas en chat: "ok", "ya", "jaja"',
       `número de veces que borraste algo antes de enviarlo: ${Math.floor(5+Math.random()*20)}/semana`,
       `archivo fotográfico facial: ${Math.floor(20+Math.random()*200)} imágenes indexadas`,
-      `perfil de voz: generado`,
-      `modelo predictivo de comportamiento: activo`,
-      `próxima acción probable: scroll por 14 minutos más`,
+      'perfil de voz: generado',
+      'modelo predictivo de comportamiento: activo',
+      'próxima acción probable: scroll por 14 minutos más',
       `probabilidad de abandono de plataforma: ${Math.floor(3+Math.random()*12)}%`,
-      `eres el producto: confirmado`,
+      'eres el producto: confirmado',
     ];
 
     const tokens = [...realData, ...inferred, ...realData.slice(0, 6)];
     tokens.sort(() => Math.random() - 0.5);
 
     const fontSizes = [10, 11, 12, 13, 14, 15, 17, 19, 22, 26];
-    let tokenCount = 0;
+    const realKeys  = ['nombre:','ciudad:','año','instagram:','edad','usuario:','ubicación:'];
 
-    function addToken() {
-      if (tokenCount >= tokens.length) {
-        clearInterval(satInterval);
-        setTimeout(goToScene5, 3500);
-        return;
-      }
-      const text = tokens[tokenCount];
-      const isReal = ['nombre:','ciudad:','año','instagram:','edad','usuario:','ubicación:'].some(k => text.startsWith(k));
-
-      const span = document.createElement('span');
-      span.classList.add('name-token');
-      span.textContent = text;
-      const fs = fontSizes[Math.floor(Math.random() * fontSizes.length)];
-      span.style.fontSize = fs + 'px';
-      span.style.opacity = '0';
-      span.style.left = '0px';
-      span.style.top = '0px';
-      span.style.color = isReal ? '#fff' : (Math.random() < 0.08 ? '#ff0033' : 'rgba(255,255,255,0.5)');
-      if (isReal) span.style.fontWeight = '900';
-
-      // Insertar invisible para medir
-      s4.appendChild(span);
-      const w = span.offsetWidth;
-      const h = span.offsetHeight;
-
-      const maxLeft = Math.max(window.innerWidth - w - 4, 0);
-      const maxTop  = Math.max(window.innerHeight - h - 4, 0);
-      span.style.left    = Math.random() * maxLeft + 'px';
-      span.style.top     = Math.random() * maxTop  + 'px';
-      span.style.opacity = (0.4 + Math.random() * 0.6).toString();
-
-      tokenCount++;
+    // Medir texto con canvas off-screen (evita reflows del DOM)
+    const measCanvas = document.createElement('canvas');
+    const measCtx    = measCanvas.getContext('2d');
+    function measureText(text, fontSize) {
+      measCtx.font = `900 ${fontSize}px "Courier New", monospace`;
+      return { w: Math.ceil(measCtx.measureText(text).width) + 2, h: fontSize + 4 };
     }
 
-    const satInterval = setInterval(addToken, 220);
-    addToken();
+    // Pre-calcular posiciones de todos los tokens (una sola vez)
+    const tokenData = tokens.map(text => {
+      const isReal = realKeys.some(k => text.startsWith(k));
+      const fs     = fontSizes[Math.floor(Math.random() * fontSizes.length)];
+      const { w, h } = measureText(text, fs);
+      return {
+        text, isReal, fs,
+        left:    Math.random() * Math.max(window.innerWidth  - w - 4, 0),
+        top:     Math.random() * Math.max(window.innerHeight - h - 4, 0),
+        opacity: 0.4 + Math.random() * 0.6,
+        color:   isReal ? '#fff' : (Math.random() < 0.08 ? '#ff0033' : 'rgba(255,255,255,0.5)'),
+      };
+    });
+
+    // Usar DocumentFragment para insertar todos de una vez por batch
+    let tokenCount = 0;
+    let lastTime   = 0;
+    let scene5Queued = false;
+
+    function addToken(ts) {
+      if (tokenCount >= tokenData.length) {
+        if (!scene5Queued) {
+          scene5Queued = true;
+          setTimeout(goToScene5, 3500);
+        }
+        return; // ← No volver a llamar rAF; evita acumulación en background
+      }
+
+      if (ts - lastTime >= TOKEN_INTERVAL_MS) {
+        lastTime = ts;
+        const d    = tokenData[tokenCount];
+        const span = document.createElement('span');
+        span.className   = 'name-token';
+        span.textContent = d.text;
+        span.style.cssText = `font-size:${d.fs}px;left:${d.left}px;top:${d.top}px;opacity:${d.opacity};color:${d.color};${d.isReal ? 'font-weight:900;' : ''}`;
+        s4.appendChild(span);
+        tokenCount++;
+      }
+
+      satRafId = requestAnimationFrame(addToken);
+    }
+
+    satRafId = requestAnimationFrame(addToken);
+  }
+
+  // ─────────────────────────────────────────────
+  // ESCENA 5: FINAL + GLITCH
+  // ─────────────────────────────────────────────
+  function goToScene5() {
+    // Cancelar el rAF de saturación si aún corre
+    if (satRafId) { cancelAnimationFrame(satRafId); satRafId = null; }
+
+    hideScene(document.getElementById('scene-names'), () => {
+      const s5 = document.getElementById('scene-final');
+      showScene(s5, 'flex');
+
+      // Audio de glitch con manejo de error explícito
+      const glitchSnd = new Audio('glitch.mp3');
+      glitchSnd.loop   = true;
+      glitchSnd.volume = 0.8;
+      glitchSnd.play().catch(err => console.warn('Audio no disponible:', err));
+
+      setTimeout(startFinalGlitch, 500);
+    });
   }
 
   function startFinalGlitch() {
-    const text = document.getElementById('profile-text');
-    const overlay = document.getElementById('glitch-overlay');
-    const errorMsg = document.getElementById('error-msg');
-    const original = 'Profile saved.';
+    const text        = document.getElementById('profile-text');
+    const overlay     = document.getElementById('glitch-overlay');
+    const errorMsg    = document.getElementById('error-msg');
+    const original    = 'Profile saved.';
     const corruptChars = '▓░▒█■□▪◆!@#%&*?/\\|<>{}[]~^';
 
     text.setAttribute('data-text', original);
@@ -719,20 +747,16 @@
     function runErrorSequence() {
       let i = 0;
       function nextLine() {
-        if (i >= errorLines.length) {
+        if (i >= errorLines.length) return;
+        const line = errorLines[i++];
+        if (line === 'Profile saved.') {
           errorMsg.innerHTML = 'Profile saved.&nbsp;<span id="cursor-blink">_</span>';
           return;
         }
-        if (errorLines[i] === 'Profile saved.') {
-          errorMsg.innerHTML = 'Profile saved.&nbsp;<span id="cursor-blink">_</span>';
-          i++;
-          return;
-        }
-        errorMsg.textContent = errorLines[i];
-        const delay = errorLines[i].startsWith('FATAL') || errorLines[i].startsWith('CRITICAL') ? 900
-                    : errorLines[i] === '.' || errorLines[i] === '..' ? 300
+        errorMsg.textContent = line;
+        const delay = line.startsWith('FATAL') || line.startsWith('CRITICAL') ? 900
+                    : line === '.' || line === '..' ? 300
                     : 500;
-        i++;
         setTimeout(nextLine, delay);
       }
       nextLine();
@@ -740,18 +764,17 @@
 
     function crashBars() {
       const count = 8 + Math.floor(Math.random() * 6);
-      const bars = [];
+      const bars  = [];
       for (let i = 0; i < count; i++) {
-        const bar = document.createElement('div');
-        const h = 4 + Math.floor(Math.random() * 40);
-        const top = Math.random() * window.innerHeight;
+        const bar    = document.createElement('div');
+        const h      = 4 + Math.floor(Math.random() * 40);
+        const top    = Math.random() * window.innerHeight;
         const offset = (Math.random() - 0.5) * 60;
         bar.style.cssText = `
-          position:absolute; left:0; width:100%; height:${h}px;
-          top:${top}px; background:${Math.random()<0.5?'#ff0033':'#00ffff'};
-          opacity:${0.4 + Math.random()*0.6};
-          transform:translateX(${offset}px);
-          pointer-events:none; z-index:50;
+          position:absolute;left:0;width:100%;height:${h}px;
+          top:${top}px;background:${Math.random()<0.5?'#ff0033':'#00ffff'};
+          opacity:${0.4+Math.random()*0.6};transform:translateX(${offset}px);
+          pointer-events:none;z-index:50;
           mix-blend-mode:${Math.random()<0.5?'difference':'screen'};
         `;
         overlay.appendChild(bar);
@@ -760,29 +783,31 @@
       setTimeout(() => bars.forEach(b => b.remove()), 80 + Math.random() * 120);
     }
 
+    // Reutiliza un único elemento flash para evitar crear/destruir nodos
+    const flash = document.createElement('div');
+    flash.style.cssText = 'position:fixed;inset:0;opacity:0;z-index:99;pointer-events:none;transition:opacity 0.15s;';
+    document.body.appendChild(flash);
+
     function screenFlash(color) {
-      const flash = document.createElement('div');
-      flash.style.cssText = `
-        position:fixed; inset:0; background:${color};
-        opacity:0.85; z-index:99; pointer-events:none;
-        transition: opacity 0.15s;
-      `;
-      document.body.appendChild(flash);
-      setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 200); }, 60);
+      flash.style.background = color;
+      flash.style.opacity    = '0.85';
+      setTimeout(() => { flash.style.opacity = '0'; }, 60);
     }
 
     function corruptText(rounds) {
       let iter = 0;
       const maxIter = 20;
       const iv = setInterval(() => {
-        text.textContent = original.split('').map(c => {
-          if (c === ' ') return ' ';
-          return Math.random() < 0.5 ? corruptChars[Math.floor(Math.random()*corruptChars.length)] : c;
-        }).join('');
-        text.setAttribute('data-text', text.textContent);
+        const corrupted = original.split('').map(c =>
+          c === ' ' ? ' ' : Math.random() < 0.5
+            ? corruptChars[Math.floor(Math.random() * corruptChars.length)]
+            : c
+        ).join('');
+        text.textContent = corrupted;
+        text.setAttribute('data-text', corrupted);
         text.style.transform = `translateX(${(Math.random()-0.5)*20}px) skewX(${(Math.random()-0.5)*8}deg)`;
-        iter++;
-        if (iter >= maxIter) {
+
+        if (++iter >= maxIter) {
           clearInterval(iv);
           text.textContent = original;
           text.setAttribute('data-text', original);
@@ -792,37 +817,23 @@
       }, 50);
     }
 
+    // Arranque del glitch
     setTimeout(() => {
       screenFlash('#ff0033');
       crashBars();
       setTimeout(() => { crashBars(); screenFlash('#00ffff'); }, 100);
-      setTimeout(() => { crashBars(); }, 200);
+      setTimeout(() => crashBars(), 200);
       setTimeout(() => corruptText(3), 300);
     }, 1500);
 
+    // Loop de glitch periódico
     setTimeout(function loop() {
       crashBars();
-      if (Math.random() < 0.4) screenFlash(Math.random()<0.5?'#ff0033':'#fff');
+      if (Math.random() < 0.4) screenFlash(Math.random() < 0.5 ? '#ff0033' : '#fff');
       setTimeout(loop, 3000 + Math.random() * 4000);
     }, 6000);
 
     setTimeout(runErrorSequence, 800);
-  }
-
-  function goToScene5() {
-    const s4 = document.getElementById('scene-names');
-    s4.classList.add('fade-out');
-    setTimeout(() => {
-      s4.style.display = 'none';
-      const s5 = document.getElementById('scene-final');
-      s5.style.display = 'flex';
-      // Arrancar el sonido inmediatamente al entrar a la escena final
-      const glitchSnd = new Audio('glitch.mp3');
-      glitchSnd.loop = true;
-      glitchSnd.volume = 0.8;
-      glitchSnd.play().catch(() => {});
-      setTimeout(startFinalGlitch, 500);
-    }, 800);
   }
 </script>
 </body>
