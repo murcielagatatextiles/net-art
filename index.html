@@ -279,7 +279,7 @@
 </section>
 
 <!-- ESCENA 1: Video -->
-<section id="scene-video scene">
+<section id="scene-video" class="scene">
   <video id="main-video" playsinline preload="none"></video>
 </section>
 
@@ -353,10 +353,27 @@
     video.load();
 
     hideScene(enterScreen, () => {
-      video.addEventListener('ended', startScene2, { once: true });
-      // Fallback: si el video no termina en 31s, avanzar igual
-      scene2Fallback = setTimeout(startScene2, 31000);
+      // Arrancar el video y medir cuánto dura realmente
       video.play().catch(console.warn);
+
+      // Esperar a que los metadatos estén listos para saber la duración exacta
+      function armFallback() {
+        const duration = isFinite(video.duration) && video.duration > 0
+          ? video.duration * 1000   // duración real en ms
+          : 31000;                   // si no está disponible, 31s por defecto
+        // +500ms de margen para que ended se dispare antes que el fallback
+        scene2Fallback = setTimeout(startScene2, duration + 500);
+      }
+
+      if (isFinite(video.duration) && video.duration > 0) {
+        armFallback();
+      } else {
+        video.addEventListener('loadedmetadata', armFallback, { once: true });
+        // Seguro extra: si nunca llegan metadatos en 3s, usar 31s
+        setTimeout(() => { if (!scene2Started) armFallback(); }, 3000);
+      }
+
+      video.addEventListener('ended', startScene2, { once: true });
     });
   }, { once: true });
 
@@ -369,6 +386,11 @@
     if (scene2Started) return;
     scene2Started = true;
     clearTimeout(scene2Fallback);
+
+    // ── FIX: detener el video y su audio antes de salir ──
+    video.pause();
+    video.removeEventListener('ended', startScene2);
+    video.src = '';   // libera el recurso y corta el audio
 
     hideScene(sceneVideo, () => {
       const s2 = document.getElementById('scene-iknow');
