@@ -313,7 +313,7 @@
 
 <!-- ESCENA 1: Video -->
 <section id="scene-video">
-  <video id="main-video" playsinline></video>
+  <video id="main-video" playsinline preload="auto"></video>
 </section>
 
 <!-- ESCENA 2: I KNOW YOU + fotos -->
@@ -349,6 +349,9 @@
   const video = document.getElementById('main-video');
   const enterScreen = document.getElementById('scene-enter');
 
+  // Precargar el video desde el inicio
+  video.src = 'video.mp4';
+
   let scene2Started = false;
   let scene2Fallback;
 
@@ -357,13 +360,11 @@
     enterScreen.classList.add('fade-out');
     setTimeout(() => {
       enterScreen.style.display = 'none';
-      video.src = 'video.mp4';
+      video.addEventListener('ended', startScene2, { once: true });
+      scene2Fallback = setTimeout(startScene2, 31000);
       video.play();
     }, 800);
-  });
-
-  video.addEventListener('ended', startScene2);
-  scene2Fallback = setTimeout(startScene2, 31000);
+  }, { once: true });
 
   function startScene2() {
     if (scene2Started) return;
